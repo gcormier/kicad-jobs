@@ -3,7 +3,7 @@ on:
   workflow_call:
 
 jobs:
-  FabricationOutputs:
+  fabrication:
     env:
       BaseFileName: ${{ github.event.repository.name }}
       Timezone: America/Toronto
@@ -29,7 +29,7 @@ jobs:
       - name: KiBot
         uses: INTI-CMNB/KiBot@v2_k6
         with:
-          config: pcb/.kibot/kibot.yaml
+          config: pcb/kibot.yaml
           dir: ${{ env.OutputFolder }}
           schema: pcb/${{ env.BaseFileName }}.kicad_sch
           board: pcb/${{ env.BaseFileName }}.kicad_pcb
