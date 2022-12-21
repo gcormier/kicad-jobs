@@ -37,7 +37,7 @@ jobs:
         uses: INTI-CMNB/KiBot@v2_k6
         with:
           config: pcb/kibot.yaml
-          dir: ${{ env.OutputFolder }}
+          dir: ${{ env.OutputFolder }} 
           schema: pcb/${{ env.BaseFileName }}.kicad_sch
           board: pcb/${{ env.BaseFileName }}.kicad_pcb
 
@@ -56,4 +56,5 @@ jobs:
           files: |
             ${{ env.OutputFolder }}/*.zip
             ${{ env.OutputFolder }}/*.pdf
+            ${{ env.OutputFolder }}/*.step
         
