@@ -12,7 +12,7 @@ jobs:
     env:
       BaseFileName: ${{ github.event.repository.name }}
       Timezone: America/Toronto
-      OutputFolder: pcb/KiBotOutput
+      PanelFolder: pcb/panel
     runs-on: ubuntu-latest
 
     steps:
