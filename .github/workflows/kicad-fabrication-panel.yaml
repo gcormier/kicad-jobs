@@ -1,0 +1,61 @@
+## Expects
+## ./pcb - kicad project, pcb and schematic in here
+## ./pcb/kibot-panel.yaml - kibot configuration file for the panel operation
+## ./pcb/kibot.yaml - kibot configuration file
+
+name: "Panel Fabrication"
+on:
+  workflow_call:
+
+jobs:
+  fabrication:
+    env:
+      BaseFileName: ${{ github.event.repository.name }}
+      Timezone: America/Toronto
+      OutputFolder: pcb/KiBotOutput
+    runs-on: ubuntu-latest
+
+    steps:
+      # Check out the files
+      - uses: actions/checkout@v3
+
+      # Generate the panel first
+      - name: KiBot (Panel)
+        uses: INTI-CMNB/KiBot@v2_k6
+        with:
+          config: pcb/kibot-panel.yaml
+          dir: ${{ env.PanelFolder }} 
+          schema: pcb/${{ env.BaseFileName }}.kicad_sch
+          board: pcb/${{ env.BaseFileName }}.kicad_pcb
+
+      # Get the current date and time, in the timezone specified above, for use later.
+      - name: Get current date and time
+        id: date
+        run: echo "date=$(TZ='${{ env.Timezone }}' date +'%Y-%m-%d %T')" >> $GITHUB_OUTPUT
+
+      # Get the current date
+      - name: Get current date
+        id: date_only
+        run: echo "date_only=$(TZ='${{ env.Timezone }}' date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
+
+      # Generate fab output based on panel
+      - name: KiBot
+        uses: INTI-CMNB/KiBot@v2_k6
+        with:
+          config: pcb/kibot.yaml
+          dir: ${{ env.PanelFolder }} 
+          schema: pcb/${{ env.BaseFileName }}.kicad_sch
+          board: ${{ env.PanelFolder }}/${{ env.BaseFileName }}-panel.kicad_pcb
+      
+      # Issue in Github Actions
+      - name: Fix root permissions
+        id: fixpermissions
+        run: sudo chown -R 1001:123 ${{ env.PanelFolder }}/*
+
+      # Archive all the artifacts from output and attach to the action's results.
+      - name: Archive production artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ env.BaseFileName }}-panel-${{ steps.date_only.outputs.date_only }}
+          path: ${{ env.PanelFolder }}/**
+        
