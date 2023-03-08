@@ -54,7 +54,7 @@ jobs:
 
       - name: ls
         id: lsa
-        run: ls -l
+        run: ls -l && ls pcb/* -l
 
 
       # Archive all the artifacts from output and attach to the action's results.
