@@ -38,6 +38,11 @@ jobs:
         id: date_only
         run: echo "date_only=$(TZ='${{ env.Timezone }}' date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
 
+      - name: Replace single PCB with panel PCB
+        id: lsa
+        run: ls -l && ls pcb/* -l 
+        #&& mv ${{ env.PanelFolder }}/${{ env.BaseFileName }}-panel.kicad_pcb pcb/${{ env.BaseFileName }}.kicad_pcb
+      
       # Generate fab output based on panel
       - name: KiBot
         uses: INTI-CMNB/KiBot@v2_k6
@@ -52,9 +57,7 @@ jobs:
         id: fixpermissions
         run: sudo chown -R 1001:123 ${{ env.PanelFolder }}/*
 
-      - name: ls
-        id: lsa
-        run: ls -l && ls pcb/* -l
+      
 
 
       # Archive all the artifacts from output and attach to the action's results.

@@ -41,6 +41,14 @@ jobs:
           schema: pcb/${{ env.BaseFileName }}.kicad_sch
           board: pcb/${{ env.BaseFileName }}.kicad_pcb
 
+      - name: KiBot (Render)
+        uses: INTI-CMNB/KiBot@v2_k6
+        with:
+          config: pcb/kibot-render.yaml
+          dir: ${{ env.OutputFolder }} 
+          schema: pcb/${{ env.BaseFileName }}.kicad_sch
+          board: pcb/${{ env.BaseFileName }}.kicad_pcb
+
       # Archive all the artifacts from output and attach to the action's results.
       - name: Archive production artifacts
         uses: actions/upload-artifact@v3
