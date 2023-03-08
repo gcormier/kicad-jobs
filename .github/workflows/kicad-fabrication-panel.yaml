@@ -39,18 +39,23 @@ jobs:
         run: echo "date_only=$(TZ='${{ env.Timezone }}' date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
 
       # Generate fab output based on panel
-      #- name: KiBot
-      #  uses: INTI-CMNB/KiBot@v2_k6
-      #  with:
-      #    config: pcb/kibot.yaml
-      #    dir: ${{ env.PanelFolder }} 
-      #    schema: pcb/${{ env.BaseFileName }}.kicad_sch
-      #    board: ${{ env.PanelFolder }}/${{ env.BaseFileName }}-panel.kicad_pcb
+      - name: KiBot
+        uses: INTI-CMNB/KiBot@v2_k6
+        with:
+          config: pcb/kibot.yaml
+          dir: ${{ env.PanelFolder }} 
+          schema: pcb/${{ env.BaseFileName }}.kicad_sch
+          board: ${{ env.PanelFolder }}/${{ env.BaseFileName }}-panel.kicad_pcb
       
       # Issue in Github Actions
       - name: Fix root permissions
         id: fixpermissions
         run: sudo chown -R 1001:123 ${{ env.PanelFolder }}/*
+
+      - name: ls
+        id: lsa
+        run: ls -l
+
 
       # Archive all the artifacts from output and attach to the action's results.
       - name: Archive production artifacts
