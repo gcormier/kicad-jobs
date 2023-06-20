@@ -59,7 +59,7 @@ jobs:
       # Conditional release
       - name: Release
         uses: softprops/action-gh-release@v1
-        if: startsWith(github.ref, 'refs/tags/pcb-v')
+        if: startsWith(github.ref, 'refs/tags/pcb')
         with:
           files: |
             ${{ env.OutputFolder }}/*.zip
