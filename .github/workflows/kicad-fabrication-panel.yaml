@@ -53,7 +53,7 @@ jobs:
       # Issue in Github Actions
       - name: Fix root permissions
         id: fixpermissions
-        run: sudo chown -R 1001:123 ${{ env.PanelFolder }}/*
+        run: sudo chown -R 1001:123 ${{ env.PanelFolder }}
 
       - name: Update the PCBs with git hash
         run: |
