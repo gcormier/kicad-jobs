@@ -16,10 +16,29 @@ jobs:
       Timezone: America/Toronto
       OutputFolder: pcb/KiBotOutput
     runs-on: ubuntu-latest
+    #container: ghcr.io/inti-cmnb/kicad7_auto:latest
 
     steps:
+      - name: Generate Short SHA Environment Variable
+        run: echo "SHORT_SHA=`echo ${GITHUB_SHA} | cut -c1-8`" >> $GITHUB_ENV
+
+      - name: Extract branch name
+        shell: bash
+        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+        id: extract_branch   
+        
       # Check out the files
       - uses: actions/checkout@v3
+
+      - name: Update the PCBs with git hash
+        #if: github.event_name == 'release' || steps.extract_branch.outputs.branch == env.main_branch
+        run: |
+          export COMMIT=$(git rev-parse --short HEAD)
+          echo "COMMIT = ${COMMIT}"    
+          echo "ref: ${{ github.ref }}"
+          echo "default: ${{ env.default }}"
+          sed -i "s!<<hash>>!${COMMIT}!" pcb/*.kicad_pcb
+          
 
       # Get the current date and time, in the timezone specified above, for use later.
       - name: Get current date and time
@@ -53,7 +72,7 @@ jobs:
       - name: Archive production artifacts
         uses: actions/upload-artifact@v3
         with:
-          name: ${{ env.BaseFileName }}-fab-${{ steps.date_only.outputs.date_only }}
+          name: ${{ env.BaseFileName }}-${{ env.Timezone }}-fab-${{ steps.date_only.outputs.date_only }}
           path: ${{ env.OutputFolder }}/**
 
       # Conditional release
