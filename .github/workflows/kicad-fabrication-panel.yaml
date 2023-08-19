@@ -4,6 +4,7 @@
 ## ./pcb/kibot.yaml - kibot configuration file
 
 name: "Panel Fabrication"
+run-name: "Panel Fabrication against ${{ github.ref_name }}"
 on:
   workflow_call:
 
