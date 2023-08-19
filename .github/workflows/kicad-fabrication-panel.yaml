@@ -57,11 +57,12 @@ jobs:
 
       - name: Update the PCBs with git hash
         run: |
+          sleep 1
           export COMMIT=$(git rev-parse --short HEAD)
           echo "COMMIT = ${COMMIT}"    
           echo "ref: ${{ github.ref }}"
           echo "ref_name: ${{ github.ref_name }}"
-          sed -i "s!<<hash>>!${COMMIT}!" pcb/*.kicad_pcb
+          sed -i "s!<<hash>>!${COMMIT}!" ${{ env.PanelFolder }}/*.kicad_pcb
 
       # Archive all the artifacts from output and attach to the action's results.
       - name: Archive production artifacts
