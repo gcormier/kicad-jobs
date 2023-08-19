@@ -22,11 +22,6 @@ jobs:
       - name: Generate Short SHA Environment Variable
         run: echo "SHORT_SHA=`echo ${GITHUB_SHA} | cut -c1-8`" >> $GITHUB_ENV
 
-      # Get the current date
-      - name: Get the branch name
-        id: branchname
-        run: echo "branch_name=$(echo ${GITHUB_REF#refs/heads/})" >> $GITHUB_OUTPUT
-
       # Check out the files
       - uses: actions/checkout@v3
 
