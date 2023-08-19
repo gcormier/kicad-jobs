@@ -72,7 +72,7 @@ jobs:
       - name: Archive production artifacts
         uses: actions/upload-artifact@v3
         with:
-          name: ${{ env.BaseFileName }}-${{ $github.ref_name }}-fab-${{ steps.date_only.outputs.date_only }}
+          name: ${{ env.BaseFileName }}-${{ github.ref_name }}-fab-${{ steps.date_only.outputs.date_only }}
           path: ${{ env.OutputFolder }}/**
 
       # Conditional release
