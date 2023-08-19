@@ -22,11 +22,11 @@ jobs:
       - name: Generate Short SHA Environment Variable
         run: echo "SHORT_SHA=`echo ${GITHUB_SHA} | cut -c1-8`" >> $GITHUB_ENV
 
-      - name: Extract branch name
-        shell: bash
-        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
-        id: extract_branch   
-        
+      # Get the current date
+      - name: Get the branch name
+        id: branchname
+        run: echo "branch_name=$(echo ${GITHUB_REF#refs/heads/})" >> $GITHUB_OUTPUT
+
       # Check out the files
       - uses: actions/checkout@v3
 
@@ -72,7 +72,7 @@ jobs:
       - name: Archive production artifacts
         uses: actions/upload-artifact@v3
         with:
-          name: ${{ env.BaseFileName }}-${{ env.GITHUB_REF#refs/heads/ }}-fab-${{ steps.date_only.outputs.date_only }}
+          name: ${{ env.BaseFileName }}-${{ steps.branch_name.outputs.branch_name }}-fab-${{ steps.date_only.outputs.date_only }}
           path: ${{ env.OutputFolder }}/**
 
       # Conditional release
