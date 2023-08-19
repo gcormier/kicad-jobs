@@ -16,7 +16,7 @@ jobs:
       Timezone: America/Toronto
       OutputFolder: pcb/KiBotOutput
     runs-on: ubuntu-latest
-    container: ghcr.io/inti-cmnb/kicad7_auto:latest
+    #container: ghcr.io/inti-cmnb/kicad7_auto:latest
 
     steps:
       - name: Generate Short SHA Environment Variable
