@@ -43,7 +43,7 @@ jobs:
       # Get the current date and time, in the timezone specified above, for use later.
       - name: Get current date and time
         id: date
-        run: echo "date=$(TZ='${{ env.Timezone }}' date +'%Y-%m-%d %T')" >> $GITHUB_OUTPUT
+        run: echo "date=$(TZ='${{ env.Timezone }}' date +'%Y-%m-%d_%H%M')" >> $GITHUB_OUTPUT
 
       # Get the current date
       - name: Get current date
