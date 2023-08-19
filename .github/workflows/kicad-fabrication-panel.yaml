@@ -19,6 +19,9 @@ jobs:
       # Check out the files
       - uses: actions/checkout@v3
 
+      - name: Generate Short SHA Environment Variable
+        run: echo "SHORT_SHA=`echo ${GITHUB_SHA} | cut -c1-8`" >> $GITHUB_ENV
+
       # Generate the panel first
       - name: KiBot (Panel)
         uses: INTI-CMNB/KiBot@v2_k7
@@ -27,6 +30,15 @@ jobs:
           dir: ${{ env.PanelFolder }} 
           schema: pcb/${{ env.BaseFileName }}.kicad_sch
           board: pcb/${{ env.BaseFileName }}.kicad_pcb
+
+      - name: Update the PCBs with git hash
+        #if: github.event_name == 'release' || steps.extract_branch.outputs.branch == env.main_branch
+        run: |
+          export COMMIT=$(git rev-parse --short HEAD)
+          echo "COMMIT = ${COMMIT}"    
+          echo "ref: ${{ github.ref }}"
+          echo "default: ${{ env.default }}"
+          sed -i "s!<<hash>>!${COMMIT}!" pcb/panel/*.kicad_pcb
 
       # Get the current date and time, in the timezone specified above, for use later.
       - name: Get current date and time
@@ -38,11 +50,6 @@ jobs:
         id: date_only
         run: echo "date_only=$(TZ='${{ env.Timezone }}' date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
 
-      - name: Replace single PCB with panel PCB
-        id: lsa
-        run: ls -l && ls pcb/* -l 
-        #&& mv ${{ env.PanelFolder }}/${{ env.BaseFileName }}-panel.kicad_pcb pcb/${{ env.BaseFileName }}.kicad_pcb
-      
       # Generate fab output based on panel
       - name: KiBot
         uses: INTI-CMNB/KiBot@v2_k7
@@ -56,9 +63,7 @@ jobs:
       - name: Fix root permissions
         id: fixpermissions
         run: sudo chown -R 1001:123 ${{ env.PanelFolder }}/*
-
-      
-
+        
 
       # Archive all the artifacts from output and attach to the action's results.
       - name: Archive production artifacts
