@@ -55,7 +55,8 @@ jobs:
           echo "ref: ${{ github.ref }}"
           echo "ref_name: ${{ github.ref_name }}"
           sed -i "s!<<hash>>!${COMMIT}!" ${{ env.PanelFolder }}/${{ env.BaseFileName }}-panel.kicad_pcb
-      
+          sed -e 's/<<pid>>/\'$((++count))'/g; s/<<pid>>/\'$((++count))'/g' ${{ env.PanelFolder }}/${{ env.BaseFileName }}-panel.kicad_pcb
+
       # Generate fab output based on panel
       - name: KiBot
         uses: INTI-CMNB/KiBot@v2_k7
