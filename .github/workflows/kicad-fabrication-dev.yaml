@@ -48,7 +48,7 @@ jobs:
       # Actually run KiBot to generate all the files. The KiBot script used is
       # in the .kibot/release.kibot.yaml folder.
       - name: KiBot
-        uses: INTI-CMNB/KiBot@v2_k7d
+        uses: INTI-CMNB/KiBot@v2_dk7
         with:
           config: pcb/kibot.yaml
           dir: ${{ env.OutputFolder }} 
@@ -56,7 +56,7 @@ jobs:
           board: pcb/${{ env.BaseFileName }}.kicad_pcb
 
       - name: KiBot (Render)
-        uses: INTI-CMNB/KiBot@v2_k7d
+        uses: INTI-CMNB/KiBot@v2_dk7
         with:
           config: pcb/kibot-render.yaml
           dir: ${{ env.OutputFolder }} 
