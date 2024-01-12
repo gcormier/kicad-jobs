@@ -58,7 +58,7 @@ jobs:
       
           - name: Remove individual JLC marking
         run: |
-          sed -i "s!JLCJLCJLC1! !" ${{ env.PanelFolder }}/${{ env.BaseFileName }}-panel.kicad_pcb
+          sed -i "s!JLCJLCJLCJLC1! !" ${{ env.PanelFolder }}/${{ env.BaseFileName }}-panel.kicad_pcb
 
       # Generate fab output based on panel
       - name: KiBot
