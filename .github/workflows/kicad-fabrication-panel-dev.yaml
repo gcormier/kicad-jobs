@@ -56,6 +56,10 @@ jobs:
           echo "ref_name: ${{ github.ref_name }}"
           sed -i "s!<<hash>>!${COMMIT}!" ${{ env.PanelFolder }}/${{ env.BaseFileName }}-panel.kicad_pcb
       
+      - name: Remove individual JLC marking
+        run: |
+          sed -i "s!JLCJLCJLC1! !" ${{ env.PanelFolder }}/${{ env.BaseFileName }}-panel.kicad_pcb
+      
       # Generate fab output based on panel
       - name: KiBot
         uses: INTI-CMNB/KiBot@v2_dk7
