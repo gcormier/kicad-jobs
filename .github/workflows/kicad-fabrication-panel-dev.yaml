@@ -25,7 +25,7 @@ jobs:
 
       # Generate the panel first
       - name: KiBot (Panel)
-        uses: INTI-CMNB/KiBot@v2_dk7
+        uses: INTI-CMNB/KiBot@v2_dk8
         with:
           config: pcb/kibot-panel.yaml
           dir: ${{ env.PanelFolder }} 
@@ -62,7 +62,7 @@ jobs:
       
       # Generate fab output based on panel
       - name: KiBot
-        uses: INTI-CMNB/KiBot@v2_dk7
+        uses: INTI-CMNB/KiBot@v2_dk8
         with:
           config: pcb/kibot.yaml
           dir: ${{ env.PanelFolder }} 
