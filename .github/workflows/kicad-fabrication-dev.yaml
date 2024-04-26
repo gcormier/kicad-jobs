@@ -23,7 +23,7 @@ jobs:
         run: echo "SHORT_SHA=`echo ${GITHUB_SHA} | cut -c1-8`" >> $GITHUB_ENV
 
       # Check out the files
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Update the PCBs with git hash
         #if: github.event_name == 'release' || steps.extract_branch.outputs.branch == env.main_branch
@@ -65,7 +65,7 @@ jobs:
 
       # Archive all the artifacts from output and attach to the action's results.
       - name: Archive production artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ env.BaseFileName }}-${{ github.ref_name }}-fab-${{ steps.date.outputs.date }}
           path: ${{ env.OutputFolder }}/**
