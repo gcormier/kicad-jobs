@@ -56,7 +56,7 @@ jobs:
           echo "ref_name: ${{ github.ref_name }}"
           sed -i "s!<<hash>>!${COMMIT}!" ${{ env.PanelFolder }}/${{ env.BaseFileName }}-panel.kicad_pcb
       
-          - name: Remove individual JLC marking
+      - name: Remove individual JLC marking
         run: |
           sed -i "s!JLCJLCJLCJLC1! !" ${{ env.PanelFolder }}/${{ env.BaseFileName }}-panel.kicad_pcb
 
