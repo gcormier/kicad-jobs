@@ -49,12 +49,18 @@ jobs:
 
       - name: Update the PCBs with git hash
         run: |
-          sleep 1
           export COMMIT=$(git rev-parse --short HEAD)
-          echo "COMMIT = ${COMMIT}"    
+          echo "COMMIT = ${COMMIT}"
           echo "ref: ${{ github.ref }}"
-          echo "ref_name: ${{ github.ref_name }}"
-          sed -i "s!<<hash>>!${COMMIT}!" ${{ env.PanelFolder }}/${{ env.BaseFileName }}-panel.kicad_pcb
+          # Check if we're on a tag
+          if [[ "${{ github.ref }}" == refs/tags/* ]]; then
+            export TAG_NAME=${GITHUB_REF#refs/tags/}
+            echo "Running on tag: ${TAG_NAME}"
+            sed -i "s!<<hash>>!${TAG_NAME}!" pcb/*.kicad_pcb
+          else
+            echo "Not running on a tag, using commit hash"
+            sed -i "s!<<hash>>!${COMMIT}!" pcb/*.kicad_pcb
+          fi
       
       - name: Remove individual JLC marking
         run: |
