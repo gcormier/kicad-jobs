@@ -56,10 +56,10 @@ jobs:
           if [[ "${{ github.ref }}" == refs/tags/* ]]; then
             export TAG_NAME=${GITHUB_REF#refs/tags/}
             echo "Running on tag: ${TAG_NAME}"
-            sed -i "s!<<hash>>!${TAG_NAME}!" pcb/*.kicad_pcb
+            find . -name "*.kicad_pcb" -exec sed -i ':a;N;$!ba;s/<<hash>>/'${TAG_NAME}'/g' {} \;
           else
             echo "Not running on a tag, using commit hash"
-            sed -i "s!<<hash>>!${COMMIT}!" pcb/*.kicad_pcb
+            find . -name "*.kicad_pcb" -exec sed -i ':a;N;$!ba;s/<<hash>>/'${COMMIT}'/g' {} \;
           fi
       
       - name: Remove individual JLC marking
