@@ -19,6 +19,8 @@ jobs:
     steps:
       # Check out the files
       - uses: actions/checkout@v4
+        with:
+          submodules: recursive
 
       - name: Generate Short SHA Environment Variable
         run: echo "SHORT_SHA=`echo ${GITHUB_SHA} | cut -c1-8`" >> $GITHUB_ENV
