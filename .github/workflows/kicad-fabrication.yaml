@@ -1,20 +1,36 @@
 ## Expects
 ## ./pcb - kicad project, pcb and schematic in here
 ## ./pcb/kibot.yaml - kibot configuration file
+## (override with the project_dir / project_name inputs for multi-board repos)
 
 ## Outputs - zip
 ## if tagged matching pattern pcb-v* (eg pcb-v3), will create a release with artifacts
+## (prefix configurable with the release_tag_prefix input)
 
 name: "Fabrication"
 on:
   workflow_call:
+    inputs:
+      project_dir:
+        description: 'Directory holding the KiCad project and kibot yamls'
+        type: string
+        default: 'pcb'
+      project_name:
+        description: 'KiCad project name, defaults to the repository name'
+        type: string
+        default: ''
+      release_tag_prefix:
+        description: 'Tags starting with this prefix create a GitHub release'
+        type: string
+        default: 'pcb'
 
 jobs:
   fabrication:
     env:
-      BaseFileName: ${{ github.event.repository.name }}
+      BaseFileName: ${{ inputs.project_name || github.event.repository.name }}
+      ProjectDir: ${{ inputs.project_dir }}
       Timezone: America/Toronto
-      OutputFolder: pcb/KiBotOutput
+      OutputFolder: ${{ inputs.project_dir }}/KiBotOutput
     runs-on: ubuntu-latest
     #container: ghcr.io/inti-cmnb/kicad7_auto:latest
 
@@ -56,18 +72,18 @@ jobs:
       - name: KiBot
         uses: INTI-CMNB/KiBot@v2_k9
         with:
-          config: pcb/kibot.yaml
+          config: ${{ env.ProjectDir }}/kibot.yaml
           dir: ${{ env.OutputFolder }} 
-          schema: pcb/${{ env.BaseFileName }}.kicad_sch
-          board: pcb/${{ env.BaseFileName }}.kicad_pcb
+          schema: ${{ env.ProjectDir }}/${{ env.BaseFileName }}.kicad_sch
+          board: ${{ env.ProjectDir }}/${{ env.BaseFileName }}.kicad_pcb
 
       - name: KiBot (Render)
         uses: INTI-CMNB/KiBot@v2_k9
         with:
-          config: pcb/kibot-render.yaml
+          config: ${{ env.ProjectDir }}/kibot-render.yaml
           dir: ${{ env.OutputFolder }} 
-          schema: pcb/${{ env.BaseFileName }}.kicad_sch
-          board: pcb/${{ env.BaseFileName }}.kicad_pcb
+          schema: ${{ env.ProjectDir }}/${{ env.BaseFileName }}.kicad_sch
+          board: ${{ env.ProjectDir }}/${{ env.BaseFileName }}.kicad_pcb
 
       # Archive all the artifacts from output and attach to the action's results.
       - name: Archive production artifacts
@@ -79,7 +95,7 @@ jobs:
       # Conditional release
       - name: Release
         uses: softprops/action-gh-release@v1
-        if: startsWith(github.ref, 'refs/tags/pcb')
+        if: startsWith(github.ref, format('refs/tags/{0}', inputs.release_tag_prefix))
         with:
           files: |
             ${{ env.OutputFolder }}/*.zip
