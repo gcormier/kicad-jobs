@@ -33,6 +33,13 @@ jobs:
           board: pcb/${{ env.BaseFileName }}.kicad_pcb
 
       # Get the current date and time, in the timezone specified above, for use later.
+      # Artifact names can't contain '/', which PR refs (eg 28/merge) and branch
+      # names can; prefer the PR's head branch and turn slashes into dashes.
+      - name: Artifact-safe ref name
+        run: |
+          ref="${GITHUB_HEAD_REF:-$GITHUB_REF_NAME}"
+          echo "REF_SAFE=${ref//\//-}" >> $GITHUB_ENV
+
       - name: Get current date and time
         id: date
         run: echo "date=$(TZ='${{ env.Timezone }}' date +'%Y-%m-%d_%H%M')" >> $GITHUB_OUTPUT
@@ -79,6 +86,6 @@ jobs:
       - name: Archive production artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ env.BaseFileName }}-${{ github.ref_name }}-panel-${{ steps.date.outputs.date }}
+          name: ${{ env.BaseFileName }}-${{ env.REF_SAFE }}-panel-${{ steps.date.outputs.date }}
           path: ${{ env.PanelFolder }}/**
         
