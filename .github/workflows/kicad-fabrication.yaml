@@ -31,7 +31,7 @@ jobs:
       ProjectDir: ${{ inputs.project_dir }}
       Timezone: America/Toronto
       OutputFolder: ${{ inputs.project_dir }}/KiBotOutput
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     #container: ghcr.io/inti-cmnb/kicad7_auto:latest
 
     steps:
@@ -39,7 +39,7 @@ jobs:
         run: echo "SHORT_SHA=`echo ${GITHUB_SHA} | cut -c1-8`" >> $GITHUB_ENV
 
       # Check out the files
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           submodules: recursive
 
@@ -96,14 +96,14 @@ jobs:
 
       # Archive all the artifacts from output and attach to the action's results.
       - name: Archive production artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: ${{ env.BaseFileName }}-${{ env.REF_SAFE }}-fab-${{ steps.date.outputs.date }}
           path: ${{ env.OutputFolder }}/**
 
       # Conditional release
       - name: Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v3
         if: startsWith(github.ref, format('refs/tags/{0}', inputs.release_tag_prefix))
         with:
           files: |
